@@ -24,6 +24,9 @@ ShoeShop là ứng dụng web bán hàng được xây dựng bằng Spring Boot
 - IDE: Spring Tool Suite 4 (STS4) hoặc IntelliJ IDEA
 - Browser: Chrome, Firefox, Edge (phiên bản mới nhất)
 
+## Gist.github
+- https://gist.github.com/Hunmonters/e8e13e24822ceb3f3f433913553c4152
+
 ## Hướng dẫn cài đặt
 
 ### 1. Tạo Database
