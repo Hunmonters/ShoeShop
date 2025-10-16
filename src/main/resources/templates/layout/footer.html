@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:fragment="footer">
+<body>
+<footer class="bg-dark text-light py-5 mt-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <h5 class="fw-bold mb-3">
+                    <i class="bi bi-shop"></i> ShoeShop
+                </h5>
+                <p class="text-muted">
+                    Cửa hàng giày thể thao chính hãng, uy tín hàng đầu Việt Nam.
+                    Cam kết 100% sản phẩm chính hãng.
+                </p>
+                <div class="d-flex gap-3">
+                    <a href="#" class="text-light"><i class="bi bi-facebook fs-4"></i></a>
+                    <a href="#" class="text-light"><i class="bi bi-instagram fs-4"></i></a>
+                    <a href="#" class="text-light"><i class="bi bi-youtube fs-4"></i></a>
+                    <a href="#" class="text-light"><i class="bi bi-twitter fs-4"></i></a>
+                </div>
+            </div>
+
+            <div class="col-md-2 mb-4">
+                <h6 class="fw-bold mb-3">Danh mục</h6>
+                <ul class="list-unstyled">
+                    <li><a href="#" class="text-muted text-decoration-none">Giày Nam</a></li>
+                    <li><a href="#" class="text-muted text-decoration-none">Giày Nữ</a></li>
+                    <li><a href="#" class="text-muted text-decoration-none">Giày Trẻ Em</a></li>
+                    <li><a href="#" class="text-muted text-decoration-none">Phụ kiện</a></li>
+                </ul>
+            </div>
+
+            <div class="col-md-3 mb-4">
+                <h6 class="fw-bold mb-3">Chính sách</h6>
+                <ul class="list-unstyled">
+                    <li><a href="#" class="text-muted text-decoration-none">Chính sách đổi trả</a></li>
+                    <li><a href="#" class="text-muted text-decoration-none">Chính sách bảo hành</a></li>
+                    <li><a href="#" class="text-muted text-decoration-none">Chính sách vận chuyển</a></li>
+                    <li><a href="#" class="text-muted text-decoration-none">Điều khoản sử dụng</a></li>
+                </ul>
+            </div>
+
+            <div class="col-md-3 mb-4">
+                <h6 class="fw-bold mb-3">Liên hệ</h6>
+                <ul class="list-unstyled text-muted">
+                    <li><i class="bi bi-geo-alt"></i> 123 Lê Lợi, Q1, TP.HCM</li>
+                    <li><i class="bi bi-telephone"></i> 0909 111 111</li>
+                    <li><i class="bi bi-envelope"></i> contact@shoeshop.com</li>
+                    <li><i class="bi bi-clock"></i> 8:00 - 22:00 hàng ngày</li>
+                </ul>
+            </div>
+        </div>
+
+        <hr class="my-4 bg-secondary">
+
+        <div class="row">
+            <div class="col-md-6 text-center text-md-start">
+                <p class="text-muted mb-0">
+                    &copy; 2024 ShoeShop. All rights reserved.
+                </p>
+            </div>
+            <div class="col-md-6 text-center text-md-end">
+                <img src="https://via.placeholder.com/50x30?text=VISA" alt="Visa" class="me-2">
+                <img src="https://via.placeholder.com/50x30?text=MC" alt="Mastercard" class="me-2">
+                <img src="https://via.placeholder.com/50x30?text=MOMO" alt="Momo" class="me-2">
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Custom JS -->
+<script th:src="@{/js/script.js}"></script>
+</body>
+</html>

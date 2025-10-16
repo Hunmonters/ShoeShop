@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{layout/header :: header}"></th:block>
+</head>
+<body>
+<th:block th:replace="~{layout/header :: header}"></th:block>
+
+<div class="container-fluid my-4">
+    <div class="row">
+        <!-- Admin Sidebar -->
+        <div class="col-md-2 bg-light p-3">
+            <h5 class="fw-bold mb-3">
+                <i class="bi bi-speedometer2"></i> Quản trị
+            </h5>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin}">
+                        <i class="bi bi-house"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" th:href="@{/admin/products}">
+                        <i class="bi bi-box"></i> Sản phẩm
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin/categories}">
+                        <i class="bi bi-grid"></i> Danh mục
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin/orders}">
+                        <i class="bi bi-receipt"></i> Đơn hàng
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin/accounts}">
+                        <i class="bi bi-people"></i> Tài khoản
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin/reports}">
+                        <i class="bi bi-graph-up"></i> Báo cáo
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-10">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="fw-bold">
+                    <i class="bi bi-box"></i> Quản lý sản phẩm
+                </h3>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#productModal">
+                    <i class="bi bi-plus-circle"></i> Thêm sản phẩm
+                </button>
+            </div>
+
+            <!-- Search & Filter -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <form th:action="@{/admin/products}" method="get" class="row g-3">
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" name="keyword"
+                                   placeholder="Tìm kiếm sản phẩm...">
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-select" name="category">
+                                <option value="">-- Tất cả danh mục --</option>
+                                <option th:each="cat : ${categories}" th:value="${cat.id}"
+                                        th:text="${cat.name}">Category</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-select" name="status">
+                                <option value="">-- Trạng thái --</option>
+                                <option value="1">Còn hàng</option>
+                                <option value="0">Hết hàng</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="bi bi-search"></i> Tìm kiếm
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Products Table -->
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Hình ảnh</th>
+                                <th>Tên sản phẩm</th>
+                                <th>Danh mục</th>
+                                <th class="text-end">Giá</th>
+                                <th class="text-center">Số lượng</th>
+                                <th class="text-center">Trạng thái</th>
+                                <th class="text-center">Thao tác</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="product : ${products}">
+                                <td th:text="${product.id}">#001</td>
+                                <td>
+                                    <img th:src="@{${product.image}}" alt=""
+                                         style="width: 50px; height: 50px; object-fit: cover;"
+                                         class="rounded"
+                                         onerror="this.src='https://via.placeholder.com/50'">
+                                </td>
+                                <td>
+                                    <strong th:text="${product.name}">Product Name</strong>
+                                </td>
+                                <td>
+                                            <span class="badge bg-secondary" th:text="${product.category.name}">
+                                                Category
+                                            </span>
+                                </td>
+                                <td class="text-end"
+                                    th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} + 'đ'">
+                                    0đ
+                                </td>
+                                <td class="text-center">
+                                    <span th:text="${product.quantity}">0</span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge bg-success" th:if="${product.available}">Hoạt động</span>
+                                    <span class="badge bg-danger" th:unless="${product.available}">Tạm dừng</span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group btn-group-sm">
+                                        <button class="btn btn-outline-primary" title="Sửa">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                        <button class="btn btn-outline-danger" title="Xóa"
+                                                onclick="return confirm('Xóa sản phẩm này?')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <nav th:if="${products.totalPages > 1}">
+                        <ul class="pagination justify-content-center mb-0">
+                            <li class="page-item" th:classappend="${products.first} ? 'disabled'">
+                                <a class="page-link" th:href="@{/admin/products(page=${products.number - 1})}">
+                                    Trước
+                                </a>
+                            </li>
+                            <li class="page-item" th:each="i : ${#numbers.sequence(0, products.totalPages - 1)}"
+                                th:classappend="${i == products.number} ? 'active'">
+                                <a class="page-link" th:href="@{/admin/products(page=${i})}"
+                                   th:text="${i + 1}">1</a>
+                            </li>
+                            <li class="page-item" th:classappend="${products.last} ? 'disabled'">
+                                <a class="page-link" th:href="@{/admin/products(page=${products.number + 1})}">
+                                    Sau
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add/Edit Product Modal -->
+<div class="modal fade" id="productModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">
+                    <i class="bi bi-plus-circle"></i> Thêm sản phẩm mới
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form th:action="@{/admin/products/save}" method="post" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Tên sản phẩm</label>
+                            <input type="text" class="form-control" name="name" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Danh mục</label>
+                            <select class="form-select" name="categoryId" required>
+                                <option value="">-- Chọn danh mục --</option>
+                                <option th:each="cat : ${categories}" th:value="${cat.id}"
+                                        th:text="${cat.name}">Category</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Giá (VNĐ)</label>
+                            <input type="number" class="form-control" name="price" min="0" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Số lượng</label>
+                            <input type="number" class="form-control" name="quantity" min="0" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Hình ảnh</label>
+                        <input type="file" class="form-control" name="imageFile" accept="image/*">
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" name="available"
+                               id="available" checked>
+                        <label class="form-check-label" for="available">
+                            Sản phẩm đang hoạt động
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Hủy
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save"></i> Lưu sản phẩm
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<th:block th:replace="~{layout/footer :: footer}"></th:block>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/_layout}">
+<body>
+<div layout:fragment="content" class="container py-4">
+    <h4 class="fw-bold text-warning mb-4">⭐ Khách hàng VIP</h4>
+    <table class="table table-bordered table-hover align-middle">
+        <thead class="table-dark text-center">
+        <tr>
+            <th>Tên khách hàng</th>
+            <th>Tổng chi tiêu</th>
+            <th>Đơn đầu tiên</th>
+            <th>Đơn gần nhất</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="v : ${vipCustomers}">
+            <td th:text="${v.customerName}"></td>
+            <td th:text="${#numbers.formatDecimal(v.totalSpent,0,'COMMA',0,'POINT')} + ' ₫'"></td>
+            <td th:text="${#temporals.format(v.firstOrderDate, 'dd/MM/yyyy')}"></td>
+            <td th:text="${#temporals.format(v.lastOrderDate, 'dd/MM/yyyy')}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

@@ -1,0 +1,78 @@
+:root {
+    --primary-color: #0d6efd;
+    --secondary-color: #6c757d;
+    --success-color: #198754;
+    --danger-color: #dc3545;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Product Card Hover Effect */
+.product-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1) !important;
+}
+
+/* Category Card */
+.category-card {
+    transition: transform 0.3s ease;
+}
+
+.category-card:hover {
+    transform: scale(1.05);
+}
+
+/* Hero Carousel Caption */
+.carousel-caption {
+    background: rgba(0,0,0,0.5);
+    padding: 20px;
+    border-radius: 10px;
+}
+
+/* Navbar Styling */
+.navbar-dark .navbar-nav .nav-link:hover {
+    color: #fff;
+    background: rgba(255,255,255,0.1);
+    border-radius: 5px;
+}
+
+/* Badge Position */
+.badge {
+    font-size: 0.7rem;
+}
+
+/* Footer Links */
+footer a:hover {
+    color: #fff !important;
+}
+
+/* Admin Sidebar */
+.nav-link.active {
+    background-color: var(--primary-color);
+    color: white !important;
+    border-radius: 5px;
+}
+
+/* Table Responsive */
+.table thead {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.card {
+    animation: fadeIn 0.5s ease;
+}
+

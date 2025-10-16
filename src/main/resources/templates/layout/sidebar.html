@@ -1,0 +1,11 @@
+<!-- Sidebar dùng cho trang có layout 2 cột -->
+<div class="col-lg-3 mb-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-white fw-semibold">Danh mục</div>
+        <ul class="list-group list-group-flush" id="categoryList">
+            <li class="list-group-item" th:each="c : ${categories}">
+                <a class="text-decoration-none" th:href="@{'/product/list-by-category/' + ${c.id}}" th:text="${c.name}">Category</a>
+            </li>
+        </ul>
+    </div>
+</div>

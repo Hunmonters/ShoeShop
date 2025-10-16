@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/header :: header}"></head>
+<body>
+<nav th:replace="~{layout/header :: navbar}"></nav>
+
+<div class="container-fluid my-4">
+    <div class="row">
+        <!-- Admin Sidebar -->
+        <div class="col-md-2 bg-dark text-white p-3">
+            <h5 class="text-center mb-4">
+                <i class="fas fa-cog"></i> QUẢN TRỊ
+            </h5>
+            <div class="list-group">
+                <a th:href="@{/admin/category/index}" class="list-group-item list-group-item-action list-group-item-dark">
+                    <i class="fas fa-tags"></i> Loại hàng
+                </a>
+                <a th:href="@{/admin/product/index}" class="list-group-item list-group-item-action list-group-item-dark">
+                    <i class="fas fa-box"></i> Sản phẩm
+                </a>
+                <a th:href="@{/admin/order/index}" class="list-group-item list-group-item-action list-group-item-dark active">
+                    <i class="fas fa-shopping-cart"></i> Đơn hàng
+                </a>
+                <a th:href="@{/admin/account/index}" class="list-group-item list-group-item-action list-group-item-dark">
+                    <i class="fas fa-users"></i> Tài khoản
+                </a>
+                <a th:href="@{/admin/report/revenue}" class="list-group-item list-group-item-action list-group-item-dark">
+                    <i class="fas fa-chart-bar"></i> Doanh thu
+                </a>
+                <a th:href="@{/admin/report/vip}" class="list-group-item list-group-item-action list-group-item-dark">
+                    <i class="fas fa-crown"></i> VIP
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-10">
+            <h2><i class="fas fa-shopping-cart"></i> Quản lý đơn hàng</h2>
+
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-list"></i> Danh sách đơn hàng</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-dark">
+                            <tr>
+                                <th>Mã ĐH</th>
+                                <th>Khách hàng</th>
+                                <th>Ngày đặt</th>
+                                <th>Tổng tiền</th>
+                                <th>Trạng thái</th>
+                                <th class="text-center">Thao tác</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="order : ${orders}">
+                                <td><strong th:text="'#' + ${order.id}">ID</strong></td>
+                                <td th:text="${order.account.fullname}">Customer</td>
+                                <td th:text="${#temporals.format(order.createDate, 'dd/MM/yyyy HH:mm')}">Date</td>
+                                <td class="text-danger fw-bold"
+                                    th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 0, 'POINT')} + ' ₫'">
+                                    Total
+                                </td>
+                                <td>
+                                    <form th:action="@{/admin/order/update-status}" method="post" class="d-inline">
+                                        <input type="hidden" name="orderId" th:value="${order.id}">
+                                        <select name="status" class="form-select form-select-sm"
+                                                th:classappend="${order.status == 0} ? 'bg-secondary text-white' :
+                                                                       ${order.status == 1} ? 'bg-info text-white' :
+                                                                       ${order.status == 2} ? 'bg-primary text-white' :
+                                                                       ${order.status == 3} ? 'bg-success text-white' : 'bg-danger text-white'"
+                                                onchange="this.form.submit()">
+                                            <option value="0" th:selected="${order.status == 0}">Mới</option>
+                                            <option value="1" th:selected="${order.status == 1}">Đã xác nhận</option>
+                                            <option value="2" th:selected="${order.status == 2}">Đang giao</option>
+                                            <option value="3" th:selected="${order.status == 3}">Hoàn thành</option>
+                                            <option value="4" th:selected="${order.status == 4}">Đã hủy</option>
+                                        </select>
+                                    </form>
+                                </td>
+                                <td class="text-center">
+                                    <a th:href="@{/admin/order/edit/{id}(id=${order.id})}"
+                                       class="btn btn-sm btn-info text-white">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a th:href="@{/admin/order/delete/{id}(id=${order.id})}"
+                                       class="btn btn-sm btn-danger"
+                                       onclick="return confirm('Xóa đơn hàng này?')">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <nav th:if="${orders.totalPages > 1}">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item" th:classappend="${orders.first} ? 'disabled'">
+                                <a class="page-link" th:href="@{/admin/order/index(page=${orders.number - 1})}">Trước</a>
+                            </li>
+                            <li class="page-item" th:each="i : ${#numbers.sequence(0, orders.totalPages - 1)}"
+                                th:classappend="${i == orders.number} ? 'active'">
+                                <a class="page-link" th:href="@{/admin/order/index(page=${i})}" th:text="${i + 1}">1</a>
+                            </li>
+                            <li class="page-item" th:classappend="${orders.last} ? 'disabled'">
+                                <a class="page-link" th:href="@{/admin/order/index(page=${orders.number + 1})}">Sau</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{layout/footer :: footer}"></footer>
+<div th:replace="~{layout/footer :: scripts}"></div>
+</body>
+</html>

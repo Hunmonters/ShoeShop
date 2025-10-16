@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/header :: header}"></head>
+<body>
+<nav th:replace="~{layout/header :: navbar}"></nav>
+
+<div class="container-fluid my-4">
+    <div class="row">
+        <!-- Admin Sidebar -->
+        <div class="col-md-2 bg-dark text-white p-3">
+            <h5 class="text-center mb-4">
+                <i class="fas fa-cog"></i> QUẢN TRỊ
+            </h5>
+            <div class="list-group">
+                <a th:href="@{/admin/category/index}" class="list-group-item list-group-item-action list-group-item-dark active">
+                    <i class="fas fa-tags"></i> Loại hàng
+                </a>
+                <a th:href="@{/admin/product/index}" class="list-group-item list-group-item-action list-group-item-dark">
+                    <i class="fas fa-box"></i> Sản phẩm
+                </a>
+                <a th:href="@{/admin/order/index}" class="list-group-item list-group-item-action list-group-item-dark">
+                    <i class="fas fa-shopping-cart"></i> Đơn hàng
+                </a>
+                <a th:href="@{/admin/account/index}" class="list-group-item list-group-item-action list-group-item-dark">
+                    <i class="fas fa-users"></i> Tài khoản
+                </a>
+                <a th:href="@{/admin/report/revenue}" class="list-group-item list-group-item-action list-group-item-dark">
+                    <i class="fas fa-chart-bar"></i> Doanh thu
+                </a>
+                <a th:href="@{/admin/report/vip}" class="list-group-item list-group-item-action list-group-item-dark">
+                    <i class="fas fa-crown"></i> VIP
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-10">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-tags"></i> Quản lý loại hàng</h2>
+                <a th:href="@{/home}" class="btn btn-secondary">
+                    <i class="fas fa-home"></i> Về trang chủ
+                </a>
+            </div>
+
+            <!-- Form -->
+            <div class="card mb-4">
+                <div class="card-header"
+                     th:classappend="${category.id == null} ? 'bg-success text-white' : 'bg-warning'">
+                    <h5 class="mb-0">
+                        <i th:class="${category.id == null} ? 'fas fa-plus-circle' : 'fas fa-edit'"></i>
+                        <span th:text="${category.id == null} ? 'Thêm loại hàng mới' : 'Cập nhật loại hàng'"></span>
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form th:action="${category.id == null} ? @{/admin/category/create} : @{/admin/category/update}"
+                          method="post" th:object="${category}">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="form-label">Mã loại <span class="text-danger">*</span></label>
+                                    <input type="text" th:field="*{id}" class="form-control"
+                                           th:readonly="${category.id != null}" required>
+                                    <small class="text-muted">VD: MEN, WOMEN, KIDS</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label">Tên loại <span class="text-danger">*</span></label>
+                                    <input type="text" th:field="*{name}" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="mb-3">
+                                    <label class="form-label">Ghi chú</label>
+                                    <input type="text" th:field="*{note}" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn"
+                                    th:classappend="${category.id == null} ? 'btn-success' : 'btn-warning'">
+                                <i th:class="${category.id == null} ? 'fas fa-plus' : 'fas fa-save'"></i>
+                                <span th:text="${category.id == null} ? 'Thêm mới' : 'Cập nhật'"></span>
+                            </button>
+                            <a th:href="@{/admin/category/index}" class="btn btn-secondary">
+                                <i class="fas fa-redo"></i> Làm mới
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-list"></i> Danh sách loại hàng</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped">
+                            <thead class="table-dark">
+                            <tr>
+                                <th width="15%">Mã loại</th>
+                                <th width="30%">Tên loại</th>
+                                <th width="40%">Ghi chú</th>
+                                <th width="15%" class="text-center">Thao tác</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="cat : ${categories}">
+                                <td><strong th:text="${cat.id}">ID</strong></td>
+                                <td th:text="${cat.name}">Name</td>
+                                <td th:text="${cat.note}">Note</td>
+                                <td class="text-center">
+                                    <a th:href="@{/admin/category/edit/{id}(id=${cat.id})}"
+                                       class="btn btn-sm btn-warning" title="Sửa">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a th:href="@{/admin/category/delete/{id}(id=${cat.id})}"
+                                       class="btn btn-sm btn-danger" title="Xóa"
+                                       onclick="return confirm('Xóa loại hàng này? Lưu ý: Các sản phẩm thuộc loại này sẽ bị ảnh hưởng!')">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{layout/footer :: footer}"></footer>
+<div th:replace="~{layout/footer :: scripts}"></div>
+</body>
+</html>

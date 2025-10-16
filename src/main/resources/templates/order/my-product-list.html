@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/header :: header}"></head>
+<body>
+<nav th:replace="~{layout/header :: navbar}"></nav>
+
+<div class="container my-5">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3">
+            <div class="list-group">
+                <a th:href="@{/account/edit-profile}" class="list-group-item list-group-item-action">
+                    <i class="fas fa-user-edit"></i> Thông tin tài khoản
+                </a>
+                <a th:href="@{/account/change-password}" class="list-group-item list-group-item-action">
+                    <i class="fas fa-key"></i> Đổi mật khẩu
+                </a>
+                <a th:href="@{/order/list}" class="list-group-item list-group-item-action">
+                    <i class="fas fa-shopping-bag"></i> Đơn hàng của tôi
+                </a>
+                <a th:href="@{/order/my-product-list}" class="list-group-item list-group-item-action active">
+                    <i class="fas fa-box"></i> Sản phẩm đã mua
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9">
+            <h2><i class="fas fa-box"></i> Sản phẩm đã mua</h2>
+
+            <div th:if="${#lists.isEmpty(products)}" class="alert alert-info">
+                Bạn chưa mua sản phẩm nào.
+            </div>
+
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                <div class="col" th:each="product : ${products}">
+                    <div class="card h-100">
+                        <img th:src="@{${product.image}}" class="card-img-top"
+                             style="height: 200px; object-fit: cover;">
+                        <div class="card-body">
+                            <h6 class="card-title" th:text="${product.name}">Product</h6>
+                            <p class="text-danger fw-bold"
+                               th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></p>
+                            <a th:href="@{/product/detail/{id}(id=${product.id})}" class="btn btn-sm btn-primary">
+                                Mua lại
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{layout/footer :: footer}"></footer>
+<div th:replace="~{layout/footer :: scripts}"></div>
+</body>
+</html>
