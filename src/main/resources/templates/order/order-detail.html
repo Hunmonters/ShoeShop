@@ -1,180 +1,42 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{layout/header :: header}"></head>
+<head><th:block th:replace="~{layout/header :: head('Chi tiết đơn hàng')}"></th:block></head>
 <body>
-<nav th:replace="~{layout/header :: navbar}"></nav>
+<th:block th:replace="~{layout/header :: navbar}"></th:block>
 
-<div class="container my-5">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a th:href="@{/home}">Trang chủ</a></li>
-            <li class="breadcrumb-item"><a th:href="@{/order/list}">Đơn hàng</a></li>
-            <li class="breadcrumb-item active">Chi tiết</li>
-        </ol>
-    </nav>
+<div class="container my-4" th:if="${order != null}">
+    <h3 class="mb-3">Đơn hàng #<span th:text="${order.id}">0</span></h3>
+    <p class="text-muted" th:text="${#temporals.format(order.createDate,'dd/MM/yyyy HH:mm')}">--</p>
 
-    <div class="row">
-        <div class="col-md-8">
-            <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">
-                        <i class="fas fa-receipt"></i>
-                        Đơn hàng #<span th:text="${order.id}">001</span>
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <!-- Order Info -->
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <p><strong>Ngày đặt:</strong>
-                                <span th:text="${#temporals.format(order.createDate, 'dd/MM/yyyy HH:mm')}">Date</span>
-                            </p>
-                            <p><strong>Trạng thái:</strong>
-                                <span class="badge"
-                                      th:classappend="${order.status == 0} ? 'bg-secondary' :
-                                                         ${order.status == 1} ? 'bg-info' :
-                                                         ${order.status == 2} ? 'bg-primary' :
-                                                         ${order.status == 3} ? 'bg-success' : 'bg-danger'"
-                                      th:text="${order.status == 0} ? 'Đơn mới' :
-                                                  ${order.status == 1} ? 'Đã xác nhận' :
-                                                  ${order.status == 2} ? 'Đang giao' :
-                                                  ${order.status == 3} ? 'Hoàn thành' : 'Đã hủy'">
-                                    </span>
-                            </p>
-                        </div>
-                        <div class="col-md-6">
-                            <p><strong>Phương thức thanh toán:</strong>
-                                <span th:text="${order.paymentMethod}">COD</span>
-                            </p>
-                            <p><strong>Ghi chú:</strong>
-                                <span th:text="${order.note ?: 'Không có'}">Note</span>
-                            </p>
-                        </div>
+    <div class="table-responsive">
+        <table class="table">
+            <thead class="table-light">
+            <tr><th>Sản phẩm</th><th class="text-center">SL</th><th class="text-end">Đơn giá</th><th class="text-end">Thành tiền</th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="d : ${order.orderDetails}">
+                <td>
+                    <div class="d-flex align-items-center">
+                        <img th:src="@{${d.product.image}}" style="width:60px;height:60px;object-fit:cover" class="rounded me-2" onerror="this.src='https://via.placeholder.com/60'">
+                        <span th:text="${d.product.name}">Product</span>
                     </div>
-
-                    <!-- Order Items -->
-                    <h6 class="fw-bold border-bottom pb-2">Sản phẩm đã đặt</h6>
-                    <table class="table table-hover">
-                        <thead>
-                        <tr>
-                            <th>Sản phẩm</th>
-                            <th class="text-center">Đơn giá</th>
-                            <th class="text-center">SL</th>
-                            <th class="text-center">Giảm giá</th>
-                            <th class="text-end">Thành tiền</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="detail : ${order.orderDetails}">
-                            <td>
-                                <div class="d-flex align-items-center">
-                                    <img th:src="@{${detail.product.image}}"
-                                         style="width: 60px; height: 60px; object-fit: cover;"
-                                         class="me-2">
-                                    <span th:text="${detail.product.name}">Product</span>
-                                </div>
-                            </td>
-                            <td class="text-center"
-                                th:text="${#numbers.formatDecimal(detail.price, 0, 'COMMA', 0, 'POINT')} + ' ₫'">
-                                Price
-                            </td>
-                            <td class="text-center" th:text="${detail.quantity}">Qty</td>
-                            <td class="text-center" th:text="${detail.discount} + '%'">0%</td>
-                            <td class="text-end"
-                                th:text="${#numbers.formatDecimal((detail.price * detail.quantity) * (1 - detail.discount/100), 0, 'COMMA', 0, 'POINT')} + ' ₫'">
-                                Total
-                            </td>
-                        </tr>
-                        </tbody>
-                        <tfoot>
-                        <tr>
-                            <td colspan="4" class="text-end"><strong>Tổng cộng:</strong></td>
-                            <td class="text-end">
-                                <strong class="text-danger fs-5"
-                                        th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 0, 'POINT')} + ' ₫'">
-                                    Total
-                                </strong>
-                            </td>
-                        </tr>
-                        </tfoot>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <!-- Shipping Info -->
-            <div class="card mb-4">
-                <div class="card-header bg-info text-white">
-                    <h6 class="mb-0"><i class="fas fa-shipping-fast"></i> Thông tin giao hàng</h6>
-                </div>
-                <div class="card-body">
-                    <p><strong>Người nhận:</strong><br>
-                        <span th:text="${order.shipName}">Name</span>
-                    </p>
-                    <p><strong>Số điện thoại:</strong><br>
-                        <span th:text="${order.shipPhone}">Phone</span>
-                    </p>
-                    <p><strong>Địa chỉ:</strong><br>
-                        <span th:text="${order.address}">Address</span>
-                    </p>
-                </div>
-            </div>
-
-            <!-- Order Timeline -->
-            <div class="card">
-                <div class="card-header bg-secondary text-white">
-                    <h6 class="mb-0"><i class="fas fa-history"></i> Trạng thái đơn hàng</h6>
-                </div>
-                <div class="card-body">
-                    <div class="timeline">
-                        <div class="timeline-item" th:class="${order.status >= 0} ? 'active' : ''">
-                            <i class="fas fa-check-circle"></i> Đơn hàng đã được đặt
-                        </div>
-                        <div class="timeline-item" th:class="${order.status >= 1} ? 'active' : ''">
-                            <i class="fas fa-check-circle"></i> Đơn hàng đã xác nhận
-                        </div>
-                        <div class="timeline-item" th:class="${order.status >= 2} ? 'active' : ''">
-                            <i class="fas fa-truck"></i> Đang giao hàng
-                        </div>
-                        <div class="timeline-item" th:class="${order.status >= 3} ? 'active' : ''">
-                            <i class="fas fa-box-open"></i> Đã giao hàng
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+                </td>
+                <td class="text-center" th:text="${d.quantity}">1</td>
+                <td class="text-end" th:text="${#numbers.formatDecimal(d.price,0,'COMMA',0,'POINT')} + ' ₫'">0 ₫</td>
+                <td class="text-end" th:text="${#numbers.formatDecimal(d.price*d.quantity,0,'COMMA',0,'POINT')} + ' ₫'">0 ₫</td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 
-    <div class="text-center mt-4">
-        <a th:href="@{/order/list}" class="btn btn-secondary">
-            <i class="fas fa-arrow-left"></i> Quay lại danh sách đơn hàng
-        </a>
+    <div class="text-end">
+        <h5>Tổng tiền:
+            <span class="text-danger" th:text="${#numbers.formatDecimal(order.totalAmount,0,'COMMA',0,'POINT')} + ' ₫'">0 ₫</span>
+        </h5>
     </div>
 </div>
 
-<footer th:replace="~{layout/footer :: footer}"></footer>
-<div th:replace="~{layout/footer :: scripts}"></div>
-
-<style>
-    .timeline {
-        position: relative;
-        padding: 20px 0;
-    }
-    .timeline-item {
-        padding: 15px;
-        margin-bottom: 10px;
-        border-left: 3px solid #ddd;
-        color: #999;
-    }
-    .timeline-item.active {
-        border-left-color: #28a745;
-        color: #000;
-        font-weight: bold;
-    }
-    .timeline-item i {
-        margin-right: 10px;
-    }
-</style>
+<th:block th:replace="~{layout/footer :: footer}"></th:block>
+<th:block th:replace="~{layout/footer :: scripts}"></th:block>
 </body>
 </html>
