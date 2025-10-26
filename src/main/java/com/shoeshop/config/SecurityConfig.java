@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+/*import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -13,37 +13,23 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // ✅ Cú pháp mới cho CSRF trong Spring Security 6+
-                .csrf(csrf -> csrf.disable())
-
-                // ✅ Cấu hình quyền truy cập
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/order/**", "/account/edit-profile", "/account/change-password").authenticated()
-                        .anyRequest().permitAll()
-                )
-
-                // ✅ Cấu hình trang đăng nhập
-                .formLogin(form -> form
-                        .loginPage("/auth/login")
-                        .defaultSuccessUrl("/home", true)
-                        .permitAll()
-                )
-
-                // ✅ Cấu hình logout
-                .logout(logout -> logout
-                        .logoutUrl("/auth/logout")
-                        .logoutSuccessUrl("/home")
-                        .permitAll()
-                );
-
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/auth/**", "/css/**", "/js/**", "/images/**").permitAll()
+                .anyRequest().authenticated()
+            )
+            .formLogin(form -> form
+                .loginPage("/auth/login")
+                .loginProcessingUrl("/auth/login")
+                .failureUrl("/auth/login?error=true") // lỗi thì redirect về đây
+                .defaultSuccessUrl("/home", true)
+                .permitAll()
+            )
+            .logout(logout -> logout
+                .logoutUrl("/auth/logout")
+                .logoutSuccessUrl("/home")
+            );
         return http.build();
     }
-}
+}*/

@@ -76,3 +76,27 @@ footer a:hover {
     animation: fadeIn 0.5s ease;
 }
 
+.hero-banner {
+    background-image: url('https://bizweb.dktcdn.net/100/336/177/themes/693093/assets/slider_1.jpg?1760668155564');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    min-height: 1000px;
+    color: #fff;
+}
+
+
+/* lớp phủ mờ để chữ dễ đọc */
+.hero-banner::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+}
+
+.hero-banner .container {
+    position: relative; /* để chữ nằm trên lớp phủ */
+    z-index: 2;
+}
+

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bảng điều khiển - Admin</title>
+
+    <style>
+        :root{--primary:#0d6efd; --success:#198754; --warning:#ffc107; --danger:#dc3545; --dark:#212529; --border:#e5e7eb;}
+        *{box-sizing:border-box} html,body{margin:0;padding:0}
+        body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;background:#f6f7fb;color:#212529}
+        .navbar{background:var(--dark); color:#fff; padding:.65rem 1rem; display:flex; align-items:center; justify-content:space-between}
+        .navbar a{color:#fff; text-decoration:none}
+        .brand{font-weight:700; display:flex; gap:.5rem; align-items:center}
+        .btn{display:inline-block; padding:.4rem .7rem; border-radius:.45rem; border:1px solid transparent; font-size:.9rem; text-decoration:none; cursor:pointer}
+        .btn-outline-light{color:#fff;border-color:#fff;background:transparent}
+        .btn-outline-light:hover{background:#fff;color:#000}
+        .btn-primary{background:var(--primary); color:#fff}
+        .btn-success{background:var(--success); color:#fff}
+        .btn-warning{background:var(--warning); color:#000}
+        .btn-danger{background:var(--danger); color:#fff}
+        .btn-outline-primary{border-color:var(--primary); color:var(--primary); background:transparent}
+        .btn-outline-primary:hover{background:var(--primary); color:#fff}
+        .btn-sm{padding:.3rem .55rem; font-size:.82rem}
+        .container{padding:1rem; max-width:1400px; margin:0 auto}
+        .row{display:grid; gap:1rem}
+        @media(min-width:768px){ .row.cols-4{grid-template-columns:repeat(4,1fr)} }
+        @media(max-width:767.98px){ .row.cols-4{grid-template-columns:repeat(2,1fr)} }
+        @media(max-width:420px){ .row.cols-4{grid-template-columns:1fr} }
+        .card{background:#fff; border:1px solid var(--border); border-radius:.75rem; box-shadow:0 4px 12px rgba(0,0,0,.04)}
+        .card-body{padding:1rem}
+        .card-header{padding:.75rem 1rem; border-bottom:1px solid var(--border); background:#fff; border-radius:.75rem .75rem 0 0}
+        .kpi-card{transition:transform .15s ease}
+        .kpi-card:hover{transform:translateY(-3px)}
+        .kpi-value{font-size:1.8rem; font-weight:700}
+        .table-wrap{overflow:auto}
+        table{width:100%; border-collapse:collapse}
+        thead th{background:#f3f4f6; font-weight:600}
+        th,td{padding:.6rem .7rem; border-bottom:1px solid var(--border); text-align:left; white-space:nowrap}
+        .text-end{text-align:right}
+        .text-muted{color:#6c757d}
+        .small{font-size:.875rem}
+    </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="navbar">
+    <a class="brand" th:href="@{/admin/dashboard}">ShoeShop Admin</a>
+    <div>
+        <a th:href="@{/}" class="btn btn-outline-light btn-sm">Trang chủ</a>
+        <a th:href="@{/auth/logout}" class="btn btn-outline-light btn-sm">Đăng xuất</a>
+    </div>
+</div>
+
+<!-- MAIN -->
+<div class="container">
+    <h2 class="fw-semibold mb-1">Bảng điều khiển</h2>
+    <div class="text-muted small">Tổng quan nhanh tình trạng hệ thống & số liệu hôm nay</div>
+    <hr />
+
+    <!-- KPI -->
+    <div class="row cols-4 mb-3">
+        <div class="card kpi-card"><div class="card-body">
+            <div class="text-muted small">Tài khoản</div>
+            <div class="kpi-value" th:text="${totalUsers} ?: 0">0</div>
+            <div class="mt-2"><a th:href="@{/admin/account/index}" class="btn btn-primary btn-sm">Danh sách</a></div>
+        </div></div>
+
+        <div class="card kpi-card"><div class="card-body">
+            <div class="text-muted small">Sản phẩm</div>
+            <div class="kpi-value" th:text="${totalProducts} ?: 0">0</div>
+            <div class="mt-2"><a th:href="@{/admin/product/index}" class="btn btn-success btn-sm">Danh sách</a></div>
+        </div></div>
+
+        <div class="card kpi-card"><div class="card-body">
+            <div class="text-muted small">Danh mục</div>
+            <div class="kpi-value" th:text="${totalCategories} ?: 0">0</div>
+            <div class="mt-2"><a th:href="@{/admin/category/index}" class="btn btn-warning btn-sm">Danh sách</a></div>
+        </div></div>
+
+        <div class="card kpi-card"><div class="card-body">
+            <div class="text-muted small">Đơn hàng</div>
+            <div class="kpi-value" th:text="${totalOrders} ?: 0">0</div>
+            <div class="mt-2"><a th:href="@{/admin/order/index}" class="btn btn-danger btn-sm">Danh sách</a></div>
+        </div></div>
+    </div>
+
+    <!-- Orders + Summary -->
+    <div class="row" style="grid-template-columns: 2fr 1fr;">
+        <!-- Recent orders -->
+        <div class="card">
+            <div class="card-header" style="display:flex; align-items:center; justify-content:space-between;">
+                <h3 class="mb-0" style="font-size:1.1rem;">Đơn hàng gần đây</h3>
+                <a th:href="@{/admin/order/index}" class="btn btn-sm btn-outline-primary">Xem tất cả</a>
+            </div>
+            <div class="card-body">
+                <div th:if="${recentOrders == null or #lists.isEmpty(recentOrders)}" class="text-muted">
+                    Chưa có dữ liệu đơn hàng.
+                </div>
+
+                <!-- ✅ chỉ hiển thị khi có dữ liệu -->
+                <div class="table-wrap" th:if="${recentOrders != null and !#lists.isEmpty(recentOrders)}">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Mã</th>
+                            <th>Khách hàng</th>
+                            <th>Ngày</th>
+                            <th class="text-end">Tổng tiền</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="o : ${recentOrders}">
+                            <td th:text="${o.id}">OD001</td>
+                            <!-- 🔁 dùng đúng field của entity Order -->
+                            <td th:text="${o.shipName}">Nguyễn A</td>
+                            <td th:text="${#temporals.format(o.createDate, 'dd/MM/yyyy HH:mm')}">01/10/2025</td>
+                            <td class="text-end"
+                                th:text="${#numbers.formatDecimal(o.totalAmount,0,'COMMA',0,'POINT')} + ' ₫'">0 ₫</td>
+                            <td class="text-end">
+                                <a th:href="@{|/admin/order/detail/${o.id}|}" class="btn btn-sm btn-outline-primary">Chi tiết</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Today summary -->
+        <div class="card">
+            <div class="card-header"><h3 class="mb-0" style="font-size:1.1rem;">Tổng kết hôm nay</h3></div>
+            <div class="card-body">
+                <ul style="list-style:none;padding:0;margin:0">
+                    <li style="display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid #e5e7eb">
+                        <span>Doanh thu</span>
+                        <span class="fw-semibold"
+                              th:text="${#numbers.formatDecimal(revenueToday ?: 0,0,'COMMA',0,'POINT')} + ' ₫'">0 ₫</span>
+                    </li>
+                    <li style="display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid #e5e7eb">
+                        <span>Đơn hoàn tất</span>
+                        <span class="fw-semibold" th:text="${ordersDoneToday} ?: 0">0</span>
+                    </li>
+                    <li style="display:flex;justify-content:space-between;padding:.4rem 0;">
+                        <span>Đơn đang xử lý</span>
+                        <span class="fw-semibold" th:text="${ordersProcessingToday} ?: 0">0</span>
+                    </li>
+                </ul>
+                <a th:href="@{/admin/report/revenue}" class="btn btn-sm btn-outline-primary" style="width:100%; margin-top:.6rem;">
+                    Xuất báo cáo ngày
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

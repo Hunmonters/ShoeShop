@@ -29,7 +29,16 @@ public class ReportService {
                 "GROUP BY c.name " +
                 "ORDER BY totalRevenue DESC";
 
-        return entityManager.createNativeQuery(sql, RevenueReportDTO.class).getResultList();
+        List<Object[]> rows = entityManager.createNativeQuery(sql).getResultList();
+
+        return rows.stream().map(r -> new RevenueReportDTO(
+                (String) r[0],
+                (java.math.BigDecimal) r[1],
+                ((Number) r[2]).longValue(),
+                (java.math.BigDecimal) r[3],
+                (java.math.BigDecimal) r[4],
+                (java.math.BigDecimal) r[5]
+        )).toList();
     }
 
     @SuppressWarnings("unchecked")
@@ -46,6 +55,13 @@ public class ReportService {
                 "GROUP BY a.fullname " +
                 "ORDER BY totalSpent DESC";
 
-        return entityManager.createNativeQuery(sql, VIPCustomerDTO.class).getResultList();
+        List<Object[]> rows = entityManager.createNativeQuery(sql).getResultList();
+
+        return rows.stream().map(r -> new VIPCustomerDTO(
+                (String) r[0],
+                (java.math.BigDecimal) r[1],
+                ((java.sql.Timestamp) r[2]).toLocalDateTime(),
+                ((java.sql.Timestamp) r[3]).toLocalDateTime()
+        )).toList();
     }
 }

@@ -19,13 +19,14 @@ public class AuthService {
 
     @Autowired
     private SessionService sessionService;
-
+    
     public boolean login(String username, String password, HttpSession session) {
         Optional<Account> account = accountRepository.findByUsername(username);
 
         if (account.isPresent() && account.get().getActivated()) {
             if (passwordEncoder.matches(password, account.get().getPasswordHash())) {
-                sessionService.set(session, "currentUser", account.get());
+                // Gán vào session key = "user"
+                sessionService.set(session, "user", account.get());
                 return true;
             }
         }
@@ -33,12 +34,12 @@ public class AuthService {
     }
 
     public void logout(HttpSession session) {
-        sessionService.remove(session, "currentUser");
+        sessionService.remove(session, "user");
         session.invalidate();
     }
 
     public Account getCurrentUser(HttpSession session) {
-        return sessionService.get(session, "currentUser");
+        return sessionService.get(session, "user");
     }
 
     public boolean isAuthenticated(HttpSession session) {

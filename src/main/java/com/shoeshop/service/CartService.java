@@ -10,6 +10,7 @@ import com.shoeshop.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.Optional;
 
 @Service
 public class CartService {
+
     @Autowired
     private CartRepository cartRepository;
 
@@ -26,6 +28,9 @@ public class CartService {
     @Autowired
     private ProductRepository productRepository;
 
+    /**
+     * Lấy giỏ hàng theo user, nếu chưa có thì tạo mới
+     */
     public Cart getOrCreateCart(Account account) {
         Optional<Cart> existingCart = cartRepository.findByAccountUsername(account.getUsername());
         if (existingCart.isPresent()) {
@@ -40,14 +45,15 @@ public class CartService {
 
     @Transactional
     public void addToCart(String username, Integer productId, Integer quantity) {
-        Cart cart = cartRepository.findByAccountUsername(username)
-                .orElseThrow(() -> new RuntimeException("Cart not found"));
+        Account account = new Account();
+        account.setUsername(username);
+
+        Cart cart = getOrCreateCart(account);
 
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        Optional<CartItem> existingItem = cartItemRepository
-                .findByCartIdAndProductId(cart.getId(), productId);
+        Optional<CartItem> existingItem = cartItemRepository.findByCartIdAndProductId(cart.getId(), productId);
 
         if (existingItem.isPresent()) {
             CartItem item = existingItem.get();
@@ -82,16 +88,19 @@ public class CartService {
 
     @Transactional
     public void clearCart(String username) {
-        Cart cart = cartRepository.findByAccountUsername(username)
-                .orElseThrow(() -> new RuntimeException("Cart not found"));
+        Account account = new Account();
+        account.setUsername(username);
 
+        Cart cart = getOrCreateCart(account);
         cart.getCartItems().clear();
         cartRepository.save(cart);
     }
 
     public List<CartItem> getCartItems(String username) {
-        Cart cart = cartRepository.findByAccountUsername(username)
-                .orElseThrow(() -> new RuntimeException("Cart not found"));
+        Account account = new Account();
+        account.setUsername(username);
+
+        Cart cart = getOrCreateCart(account);
         return cart.getCartItems();
     }
 

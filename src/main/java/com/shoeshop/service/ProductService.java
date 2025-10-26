@@ -32,8 +32,9 @@ public class ProductService {
 
     public Page<Product> findByCategory(String categoryId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return productRepository.findByCategoryId(categoryId, pageable);
+        return productRepository.findByCategory_Id(categoryId, pageable); // ✅
     }
+
 
     public Page<Product> searchByName(String keyword, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);

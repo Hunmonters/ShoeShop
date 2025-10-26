@@ -19,15 +19,20 @@
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item"><a class="nav-link" th:href="@{/}"><i class="fas fa-home"></i> Trang chủ</a></li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fas fa-list"></i> Danh mục</a>
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                            <i class="fas fa-list"></i> Danh mục
+                        </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" th:href="@{/product/list-by-category/MEN}">Giày Nam</a></li>
-                            <li><a class="dropdown-item" th:href="@{/product/list-by-category/WOMEN}">Giày Nữ</a></li>
-                            <li><a class="dropdown-item" th:href="@{/product/list-by-category/KIDS}">Giày Trẻ Em</a></li>
-                            <li><a class="dropdown-item" th:href="@{/product/list-by-category/SPORT}">Giày Thể Thao</a></li>
-                            <li><a class="dropdown-item" th:href="@{/product/list-by-category/RUNNING}">Giày Chạy Bộ</a></li>
+                            <li th:each="c : ${navCategories}">
+                                <a class="dropdown-item" th:href="@{/product/list-by-category/{id}(id=${c.id})}"
+                                   th:text="${c.name}">Danh mục</a>
+                            </li>
+                            <li th:if="${#lists.isEmpty(navCategories)}">
+                                <span class="dropdown-item text-muted">Chưa có danh mục</span>
+                            </li>
                         </ul>
                     </li>
+
                 </ul>
 
                 <form class="d-flex me-3" th:action="@{/product/search}" method="get">
@@ -46,26 +51,45 @@
                     </li>
 
                     <!-- chưa đăng nhập -->
-                    <li class="nav-item" th:if="${session.user == null}">
-                        <a class="nav-link btn btn-primary text-white" th:href="@{/auth/login}">
-                            <i class="fas fa-sign-in-alt"></i> Đăng nhập
-                        </a>
-                    </li>
+<li class="nav-item" th:if="${session.user == null}">
+    <a class="nav-link btn btn-primary text-white" th:href="@{/auth/login}">
+        <i class="fas fa-sign-in-alt"></i> Đăng nhập
+    </a>
+</li>
 
-                    <!-- đã đăng nhập -->
-                    <li class="nav-item dropdown" th:if="${session.user != null}">
-                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                            <i class="fas fa-user-circle"></i> <span th:text="${session.user.fullname}">User</span>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" th:href="@{/account/edit-profile}"><i class="fas fa-user-edit"></i> Tài khoản</a></li>
-                            <li><a class="dropdown-item" th:href="@{/account/change-password}"><i class="fas fa-key"></i> Đổi mật khẩu</a></li>
-                            <li><a class="dropdown-item" th:href="@{/order/list}"><i class="fas fa-receipt"></i> Đơn hàng</a></li>
-                            <li><a class="dropdown-item" th:href="@{/order/my-product-list}"><i class="fas fa-box"></i> Sản phẩm đã mua</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item text-danger" th:href="@{/auth/logout}"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a></li>
-                        </ul>
-                    </li>
+<!-- đã đăng nhập -->
+<li class="nav-item dropdown" th:if="${session.user != null}">
+    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+        <i class="fas fa-user-circle"></i>
+        <span th:text="${session.user.fullname}">User</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end">
+        <li><a class="dropdown-item" th:href="@{/account/edit-profile}">
+            <i class="fas fa-user-edit"></i> Tài khoản</a></li>
+        <li><a class="dropdown-item" th:href="@{/account/change-password}">
+            <i class="fas fa-key"></i> Đổi mật khẩu</a></li>
+        <li><a class="dropdown-item" th:href="@{/order/list}">
+            <i class="fas fa-receipt"></i> Đơn hàng</a></li>
+        <li><a class="dropdown-item" th:href="@{/order/my-product-list}">
+            <i class="fas fa-box"></i> Sản phẩm đã mua</a></li>
+
+        <!-- Chỉ hiện khi là admin -->
+        <li th:if="${session.user.isAdmin}">
+            <hr class="dropdown-divider">
+        </li>
+        <li th:if="${session.user.isAdmin}">
+            <a class="dropdown-item text-primary fw-bold" th:href="@{/admin/dashboard}">
+                <i class="fas fa-tools"></i> Quản trị hệ thống
+            </a>
+        </li>
+
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item text-danger" th:href="@{/auth/logout}">
+            <i class="fas fa-sign-out-alt"></i> Đăng xuất</a></li>
+    </ul>
+</li>
+
+
                 </ul>
             </div>
         </div>

@@ -20,7 +20,10 @@ public class Account {
 
     @Column(name = "password_hash", length = 200, nullable = false)
     private String passwordHash;
-
+    
+    @Transient  // không map với DB, chỉ để lấy từ form
+    private String password;
+    
     @Column(length = 120, nullable = false, unique = true)
     private String email;
 

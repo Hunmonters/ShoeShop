@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{layout/header :: header}"></head>
+<head th:replace="~{layout/header :: head('Quản lý loại hàng')}"></head>
 <body>
 <nav th:replace="~{layout/header :: navbar}"></nav>
 
@@ -45,7 +45,7 @@
             <!-- Form -->
             <div class="card mb-4">
                 <div class="card-header"
-                     th:classappend="${category.id == null} ? 'bg-success text-white' : 'bg-warning'">
+                     th:classappend="${category.id == null} ? 'bg-success text-white' : 'bg-warning text-dark'">
                     <h5 class="mb-0">
                         <i th:class="${category.id == null} ? 'fas fa-plus-circle' : 'fas fa-edit'"></i>
                         <span th:text="${category.id == null} ? 'Thêm loại hàng mới' : 'Cập nhật loại hàng'"></span>

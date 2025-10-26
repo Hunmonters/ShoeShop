@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{layout/header :: header}"></head>
+<head th:replace="~{layout/header :: head('Quản lý tài khoản')}"></head>
 <body>
 <nav th:replace="~{layout/header :: navbar}"></nav>
 
@@ -63,14 +63,14 @@
                 <td th:text="${acc.email}">Email</td>
                 <td th:text="${acc.phone}">Phone</td>
                 <td>
-                                            <span class="badge"
-                                                  th:classappend="${acc.activated} ? 'bg-success' : 'bg-danger'"
-                                                  th:text="${acc.activated} ? 'Active' : 'Inactive'"></span>
+                  <span class="badge"
+                        th:classappend="${acc.activated} ? 'bg-success' : 'bg-danger'"
+                        th:text="${acc.activated} ? 'Active' : 'Inactive'"></span>
                 </td>
                 <td>
-                                            <span class="badge"
-                                                  th:classappend="${acc.isAdmin} ? 'bg-danger' : 'bg-secondary'"
-                                                  th:text="${acc.isAdmin} ? 'Admin' : 'User'"></span>
+                  <span class="badge"
+                        th:classappend="${acc.isAdmin} ? 'bg-danger' : 'bg-secondary'"
+                        th:text="${acc.isAdmin} ? 'Admin' : 'User'"></span>
                 </td>
                 <td th:text="${#temporals.format(acc.createDate, 'dd/MM/yyyy')}">Date</td>
                 <td class="text-center">
